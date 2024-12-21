@@ -1,8 +1,8 @@
 
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/homescreen.dart';
+import 'package:quiz_app/login.dart';
 
 class AuthWrapper extends StatelessWidget {
   @override
@@ -15,11 +15,12 @@ class AuthWrapper extends StatelessWidget {
           if (snapshot.hasData) {
             return HomeScreen();  
           }
-         
- 
+          else{
+            return LoginPage();
+          }
+
         }
         return CircularProgressIndicator();  
-        
       },
     );
   }

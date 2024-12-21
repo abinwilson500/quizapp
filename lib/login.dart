@@ -1,8 +1,8 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/forgot_pass.dart';
 import 'package:quiz_app/homescreen.dart';
+import 'package:quiz_app/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,22 +12,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _emailController=TextEditingController();
-  TextEditingController _passwordController=TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
-   Future<void> _signIn() async {
+  Future<void> _signIn() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      print('User signed in');
+      // If successful, navigate to the home screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } catch (e) {
-      print('Sign-in error: $e');
+      // Show error dialog if sign-in fails
       _showErrorDialog(e.toString());
     }
   }
-   void _showErrorDialog(String message) {
+
+  void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -44,63 +49,118 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Log In',
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Stack(
         children: [
-          Container(
-            height:400,
-            decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage("assets/images/signup.jpeg"),fit: BoxFit.cover)
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/download (copy).jpeg',
+              fit: BoxFit.cover,
             ),
           ),
-           SizedBox(height:20),
-
-           SizedBox(
-            height:40,
-            width:300,
-             child: TextField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email',border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+          // Main content
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 20),
+              SizedBox(
+                height: 40,
+                width: 300,
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15))),
+                ),
               ),
-           ),
-           SizedBox(height:20),
-            SizedBox(
-              height:40,
-            width:300,
-              child: TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Password',border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)))
+              SizedBox(height: 20),
+              SizedBox(
+                height: 40,
+                width: 300,
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15))),
+                ),
               ),
-            ),
-            SizedBox(height: 55),
-            SizedBox(
-              height:40,
-              width:300,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 117, 199, 253),foregroundColor: Colors.white),
-
-                onPressed:()
-                {
-                  _signIn();
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
-                },
-                child: Text('Log in',style:TextStyle(fontSize: 18)),
+              SizedBox(height: 55),
+              SizedBox(
+                height: 40,
+                width: 300,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 233, 247, 254),
+                    foregroundColor: const Color.fromARGB(255, 11, 11, 11),
+                  ),
+                  onPressed: _signIn,
+                  child: Text('Log in', style: TextStyle(fontSize: 18)),
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordScreen()));
-                },
-                child: Text("Forgot password?",style: TextStyle(fontSize: 18,color:Colors.blue),)),
-            ],)
-           
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPasswordScreen()));
+                    },
+                    child: Text(
+                      "Forgot password?",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: const Color.fromARGB(255, 16, 16, 16)),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Signup())); // Assuming you have SignUpPage
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );
